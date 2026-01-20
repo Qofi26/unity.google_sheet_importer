@@ -2,12 +2,13 @@
 using System.IO;
 using Newtonsoft.Json;
 using UnityEditor;
+using UnityEngine;
 
 namespace GoogleSheetImporter.Settings
 {
     internal sealed class ImportSettings
     {
-        private const string kEditorPrefsKey = "GoogleSheetImporter_ImportSettings_v1";
+        private const string kPrefsKey = "GoogleSheetImporter_ImportSettings_v1";
         private const string kDefaultOutputFolder = "ConfigAssets";
 
         public string RootFolderUrlOrId = "";
@@ -19,13 +20,11 @@ namespace GoogleSheetImporter.Settings
         public readonly Dictionary<string, bool> SelectedFiles = new();
         public readonly List<GDriveFile> Spreadsheets = new();
 
-        internal static ConfigSettings ConfigSettings { get; private set; }
-
         public int SelectedFolderIndex = -1;
 
         public static ImportSettings Load()
         {
-            var json = EditorPrefs.GetString(kEditorPrefsKey, "");
+            var json = PlayerPrefs.GetString(kPrefsKey, "");
             if (string.IsNullOrEmpty(json))
             {
                 return new ImportSettings();
@@ -45,7 +44,7 @@ namespace GoogleSheetImporter.Settings
         public void Save()
         {
             var json = JsonConvert.SerializeObject(this);
-            EditorPrefs.SetString(kEditorPrefsKey, json);
+            PlayerPrefs.SetString(kPrefsKey, json);
         }
 
         public void EnsureOutputFolder()

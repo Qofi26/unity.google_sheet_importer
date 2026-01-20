@@ -2,6 +2,6 @@
 {
     public interface ISheetParserProvider
     {
-        public ISheetParser GetParser(string title);
+        public ISheetParser GetParser(string sheetTitle);
     }
 }

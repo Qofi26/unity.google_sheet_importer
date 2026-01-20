@@ -22,12 +22,12 @@ namespace GoogleSheetImporter.Wrappers
             return (meta.Properties.Title, meta.Sheets);
         }
 
-        public IList<IList<object>> GetValues(string spreadsheetId, string sheetTitle)
+        public IList<IList<object>> GetValues(string spreadsheetId, string sheetTitle, string columns = "A:ZZZ")
         {
-            var range = $"{Escape(sheetTitle)}!A:ZZZ";
-            var req = _sheets.Spreadsheets.Values.Get(spreadsheetId, range);
-            var resp = req.Execute();
-            return resp.Values ?? Array.Empty<IList<object>>();
+            var range = $"{Escape(sheetTitle)}!{columns}";
+            var request = _sheets.Spreadsheets.Values.Get(spreadsheetId, range);
+            var valueRange = request.Execute();
+            return valueRange.Values ?? Array.Empty<IList<object>>();
         }
 
         private static string Escape(string title)

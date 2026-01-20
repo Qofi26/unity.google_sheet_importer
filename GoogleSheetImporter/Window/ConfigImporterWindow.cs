@@ -43,7 +43,7 @@ namespace GoogleSheetImporter
         private void OnEnable()
         {
             _settings = ImportSettings.Load();
-            _authSettings = ConfigSettings.Instance;
+            _authSettings = GoogleSheetImporterSettings.Instance;
             _auth = new GoogleAuthService(_authSettings);
             InitializeMappersList();
         }
@@ -324,7 +324,7 @@ namespace GoogleSheetImporter
 
         private void DrawParser(string fileName)
         {
-            ConfigSettings.Instance.TryGetParserProvider(fileName, out var parser);
+            GoogleSheetImporterSettings.Instance.TryGetParserProvider(fileName, out var parser);
 
             var newParser = (AbstractSheetParserProvider) EditorGUILayout.ObjectField(
                 parser,
@@ -334,7 +334,7 @@ namespace GoogleSheetImporter
 
             if (newParser != parser)
             {
-                ConfigSettings.Instance.SetParserProvider(fileName, newParser);
+                GoogleSheetImporterSettings.Instance.SetParserProvider(fileName, newParser);
             }
         }
 
@@ -393,7 +393,7 @@ namespace GoogleSheetImporter
                         continue;
                     }
 
-                    if (!ConfigSettings.Instance.TryGetParserProvider(file.Name, out var parserProvider))
+                    if (!GoogleSheetImporterSettings.Instance.TryGetParserProvider(file.Name, out var parserProvider))
                     {
                         Debug.LogError("Парсер не назначен для файла: " + file.Name);
                         continue;
@@ -472,9 +472,9 @@ namespace GoogleSheetImporter
 
         private void InitializeMappersList()
         {
-            var mappers = ConfigSettings.Instance.Mappers;
+            var mappers = GoogleSheetImporterSettings.Instance.Mappers;
 
-            _mappersList = new ReorderableList(mappers, typeof(ConfigSettings.MappingConfig), true, true, true, true)
+            _mappersList = new ReorderableList(mappers, typeof(GoogleSheetImporterSettings.MappingConfig), true, true, true, true)
             {
                 drawHeaderCallback = rect => { EditorGUI.LabelField(rect, "Mappings"); },
                 drawElementCallback = (rect, index, isActive, isFocused) =>
@@ -537,13 +537,13 @@ namespace GoogleSheetImporter
                 },
                 onAddCallback = list =>
                 {
-                    mappers.Add(new ConfigSettings.MappingConfig());
-                    EditorUtility.SetDirty(ConfigSettings.Instance);
+                    mappers.Add(new GoogleSheetImporterSettings.MappingConfig());
+                    EditorUtility.SetDirty(GoogleSheetImporterSettings.Instance);
                 },
                 onRemoveCallback = list =>
                 {
                     mappers.RemoveAt(list.index);
-                    EditorUtility.SetDirty(ConfigSettings.Instance);
+                    EditorUtility.SetDirty(GoogleSheetImporterSettings.Instance);
                 }
             };
         }
@@ -551,7 +551,7 @@ namespace GoogleSheetImporter
         private void DrawApply()
         {
             _mappersList.DoLayoutList();
-            var selected = ConfigSettings.Instance.Mappers.Where(x => x.Selected).ToList();
+            var selected = GoogleSheetImporterSettings.Instance.Mappers.Where(x => x.Selected).ToList();
 
             using (new EditorGUI.DisabledScope(_mappersList.count == 0 || selected.Count == 0))
             {
@@ -568,7 +568,7 @@ namespace GoogleSheetImporter
             }
         }
 
-        private void ApplyMapping(ConfigSettings.MappingConfig mapping)
+        private void ApplyMapping(GoogleSheetImporterSettings.MappingConfig mapping)
         {
             mapping.Mapper.GetMapper().Apply();
 

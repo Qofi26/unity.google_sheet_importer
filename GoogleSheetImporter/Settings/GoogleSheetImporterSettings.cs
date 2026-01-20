@@ -8,14 +8,14 @@ using UnityEngine;
 
 namespace GoogleSheetImporter.Settings
 {
-    [CreateAssetMenu(fileName = nameof(ConfigSettings),
+    [CreateAssetMenu(fileName = nameof(GoogleSheetImporterSettings),
         menuName = nameof(GoogleSheetImporter) + "/Settings",
         order = 0)]
-    internal sealed class ConfigSettings : ScriptableObject, IAuthSettings
+    internal sealed class GoogleSheetImporterSettings : ScriptableObject, IAuthSettings
     {
-        private static ConfigSettings _instance;
+        private static GoogleSheetImporterSettings _instance;
 
-        public static ConfigSettings Instance
+        public static GoogleSheetImporterSettings Instance
         {
             get
             {
@@ -83,19 +83,19 @@ namespace GoogleSheetImporter.Settings
             }
         }
 
-        private static ConfigSettings FindAsset()
+        private static GoogleSheetImporterSettings FindAsset()
         {
-            var assets = AssetDatabase.FindAssets($"t:{typeof(ConfigSettings)}");
+            var assets = AssetDatabase.FindAssets($"t:{typeof(GoogleSheetImporterSettings)}");
             var guid = assets.FirstOrDefault();
 
             if (string.IsNullOrEmpty(guid))
             {
-                throw new Exception($"No asset of type {typeof(ConfigSettings)} found in the project. "
+                throw new Exception($"No asset of type {typeof(GoogleSheetImporterSettings)} found in the project. "
                                     + $"Please create one using the Create Asset menu.");
             }
 
             var path = AssetDatabase.GUIDToAssetPath(guid);
-            return AssetDatabase.LoadAssetAtPath<ConfigSettings>(path);
+            return AssetDatabase.LoadAssetAtPath<GoogleSheetImporterSettings>(path);
         }
 
         [Serializable]

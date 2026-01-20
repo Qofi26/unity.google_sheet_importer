@@ -9,7 +9,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using GoogleSheetImporter.Settings;
 
-namespace GoogleSheetImporter
+namespace GoogleSheetImporter.Services
 {
     internal sealed class GoogleAuthService
     {

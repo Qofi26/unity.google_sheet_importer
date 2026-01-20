@@ -4,24 +4,17 @@ using System.IO;
 using System.Linq;
 using GoogleSheetImporter.Mappers;
 using GoogleSheetImporter.Parsers;
+using GoogleSheetImporter.Services;
 using GoogleSheetImporter.Settings;
 using GoogleSheetImporter.Wrappers;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace GoogleSheetImporter
+namespace GoogleSheetImporter.Window
 {
     internal sealed class ConfigImporterWindow : EditorWindow
     {
-        [MenuItem("Tools/Google Drive Sheets Importer...")]
-        private static void Open()
-        {
-            var win = GetWindow<ConfigImporterWindow>("Sheets Importer");
-            win.minSize = new Vector2(680, 520);
-            win.Show();
-        }
-
         private ImportSettings _settings;
         private IAuthSettings _authSettings;
         private GoogleAuthService _auth;
@@ -39,6 +32,14 @@ namespace GoogleSheetImporter
         }
 
         private Vector2 _scroll;
+
+        [MenuItem("Tools/Google Drive Sheets Importer...")]
+        private static void Open()
+        {
+            var win = GetWindow<ConfigImporterWindow>("Sheets Importer");
+            win.minSize = new Vector2(680, 520);
+            win.Show();
+        }
 
         private void OnEnable()
         {
@@ -379,11 +380,8 @@ namespace GoogleSheetImporter
             {
                 _settings.EnsureOutputFolder();
 
-                // TODO: Show progress bar
-
                 var sheetsSvc = _auth.CreateSheetsService();
                 var sheets = new SheetsServiceWrapper(sheetsSvc);
-
 
                 ShowProgress();
                 foreach (var file in Spreadsheets)

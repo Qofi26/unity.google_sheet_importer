@@ -29,7 +29,7 @@ namespace GoogleSheetImporter.Services
 
         public async void Authorize()
         {
-            switch (_settings.Mode)
+            switch (_settings.AuthMode)
             {
                 case AuthMode.OAuthInstalledApp:
                     _credential = await AuthorizeOAuthInstalledApp(_settings.ClientId, _settings.ClientSecret);

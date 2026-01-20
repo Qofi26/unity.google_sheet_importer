@@ -11,7 +11,7 @@ namespace GoogleSheetImporter.Settings
     [CreateAssetMenu(fileName = nameof(GoogleSheetImporterSettings),
         menuName = nameof(GoogleSheetImporter) + "/Settings",
         order = 0)]
-    internal sealed class GoogleSheetImporterSettings : ScriptableObject, IAuthSettings
+    internal sealed class GoogleSheetImporterSettings : ScriptableObject
     {
         private static GoogleSheetImporterSettings _instance;
 
@@ -27,12 +27,6 @@ namespace GoogleSheetImporter.Settings
                 return _instance;
             }
         }
-
-        [field: SerializeField] public string ClientId { get; set; } = string.Empty;
-        [field: SerializeField] public string ClientSecret { get; set; } = string.Empty;
-
-        [field: SerializeField] public AuthMode Mode { get; set; } = AuthMode.OAuthInstalledApp;
-        [field: SerializeField] public string ServiceAccountKeyPath { get; set; } = string.Empty;
 
         [SerializeField]
         private List<ParserConfig> _parsers = new();

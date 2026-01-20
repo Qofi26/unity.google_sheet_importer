@@ -43,15 +43,15 @@ namespace GoogleSheetImporter.Window
 
         private void OnEnable()
         {
-            _settings = ImportSettings.Load();
-            _authSettings = GoogleSheetImporterSettings.Instance;
+            _settings = ImportSettingsProvider.Load();
+            _authSettings = _settings.AuthSettings;
             _auth = new GoogleAuthService(_authSettings);
             InitializeMappersList();
         }
 
         private void OnDisable()
         {
-            _settings?.Save();
+            ImportSettingsProvider.Save(_settings);
         }
 
         private void OnGUI()
@@ -152,13 +152,14 @@ namespace GoogleSheetImporter.Window
 
             if (_showPrivate)
             {
-                _authSettings.Mode = (AuthMode) EditorGUILayout.EnumPopup("Auth Mode", _authSettings.Mode);
+                _authSettings.AuthMode = (AuthMode) EditorGUILayout.EnumPopup("Auth Mode", _authSettings.AuthMode);
 
-                if (_authSettings.Mode == AuthMode.OAuthInstalledApp)
+                if (_authSettings.AuthMode == AuthMode.OAuthInstalledApp)
                 {
                     EditorGUILayout.BeginVertical();
-                    _authSettings.ClientId = EditorGUILayout.TextField("client_id", _authSettings.ClientId);
-                    _authSettings.ClientSecret = EditorGUILayout.TextField("client_secret", _authSettings.ClientSecret);
+                    _authSettings.ClientId = EditorGUILayout.PasswordField("client_id", _authSettings.ClientId);
+                    _authSettings.ClientSecret =
+                        EditorGUILayout.PasswordField("client_secret", _authSettings.ClientSecret);
                     EditorGUILayout.EndVertical();
                 }
                 else
@@ -378,7 +379,7 @@ namespace GoogleSheetImporter.Window
 
             try
             {
-                _settings.EnsureOutputFolder();
+                EnsureOutputFolder(_settings.OutputFolder);
 
                 var sheetsSvc = _auth.CreateSheetsService();
                 var sheets = new SheetsServiceWrapper(sheetsSvc);
@@ -580,6 +581,22 @@ namespace GoogleSheetImporter.Window
             var target = provider.GetTarget();
 
             EditorUtility.SetDirty(target);
+        }
+
+        private void EnsureOutputFolder(string outputFolder)
+        {
+            if (string.IsNullOrEmpty(outputFolder))
+            {
+                outputFolder = ImportSettingsProvider.kDefaultOutputFolder;
+            }
+
+            if (Directory.Exists(outputFolder))
+            {
+                return;
+            }
+
+            Directory.CreateDirectory(outputFolder);
+            AssetDatabase.Refresh();
         }
     }
 }

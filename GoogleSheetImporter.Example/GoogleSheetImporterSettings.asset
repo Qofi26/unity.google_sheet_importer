@@ -12,9 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948a54c382fb404fab8aa3d6a44aa273, type: 3}
   m_Name: GoogleSheetImporterSettings
   m_EditorClassIdentifier: GoogleSheetImporter::GoogleSheetImporter.Settings.GoogleSheetImporterSettings
-  <ClientId>k__BackingField: 
-  <ClientSecret>k__BackingField: 
-  <Mode>k__BackingField: 0
-  <ServiceAccountKeyPath>k__BackingField: 
   _parsers: []
   _mappers: []

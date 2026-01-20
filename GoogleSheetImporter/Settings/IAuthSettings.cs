@@ -1,9 +1,6 @@
-using System;
-
-namespace GoogleSheetImporter.Settings
+﻿namespace GoogleSheetImporter.Settings
 {
-    [Serializable]
-    internal sealed class AuthSettings : IAuthSettings
+    internal interface IAuthSettings
     {
         public AuthMode AuthMode { get; set; }
         public string ClientId { get; set; }

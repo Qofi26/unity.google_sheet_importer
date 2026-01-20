@@ -11,12 +11,12 @@ using Object = UnityEngine.Object;
 
 namespace GoogleSheetImporter.Mappers
 {
-    public class PropertySetter : IConfigPropertySetter
+    public class DefaultPropertySetter : IConfigPropertySetter
     {
         private readonly Object _target;
         private readonly bool _formatted;
 
-        public PropertySetter(Object target, bool formattedJson)
+        public DefaultPropertySetter(Object target, bool formattedJson)
         {
             _target = target;
             _formatted = formattedJson;

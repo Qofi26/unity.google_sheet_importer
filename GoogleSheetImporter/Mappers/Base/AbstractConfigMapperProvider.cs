@@ -7,5 +7,6 @@ namespace GoogleSheetImporter.Mappers
         public abstract Object GetTarget();
         public abstract string GetDisplayName();
         public abstract IConfigMapper GetMapper();
+        public abstract void HandleConfigUpdated();
     }
 }

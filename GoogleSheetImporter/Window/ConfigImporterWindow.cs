@@ -474,7 +474,12 @@ namespace GoogleSheetImporter
         {
             var mappers = GoogleSheetImporterSettings.Instance.Mappers;
 
-            _mappersList = new ReorderableList(mappers, typeof(GoogleSheetImporterSettings.MappingConfig), true, true, true, true)
+            _mappersList = new ReorderableList(mappers,
+                typeof(GoogleSheetImporterSettings.MappingConfig),
+                true,
+                true,
+                true,
+                true)
             {
                 drawHeaderCallback = rect => { EditorGUI.LabelField(rect, "Mappings"); },
                 drawElementCallback = (rect, index, isActive, isFocused) =>
@@ -491,9 +496,9 @@ namespace GoogleSheetImporter
 
                     var label = "Select mapper";
 
-                    if (element.Mapper)
+                    if (element.MapperProvider)
                     {
-                        label = element.Mapper.GetDisplayName();
+                        label = element.MapperProvider.GetDisplayName();
                     }
 
                     element.Selected = EditorGUI.ToggleLeft(
@@ -506,7 +511,7 @@ namespace GoogleSheetImporter
                             new Rect(rect.x + toggleWidth + padding, rect.y, buttonWidth, lineHeight),
                             "Открыть конфиг"))
                     {
-                        var target = element.Mapper.GetTarget();
+                        var target = element.MapperProvider.GetTarget();
 
                         if (target)
                         {
@@ -516,12 +521,12 @@ namespace GoogleSheetImporter
                     }
 
 
-                    element.Mapper = (AbstractConfigMapperProvider) EditorGUI.ObjectField(
+                    element.MapperProvider = (AbstractConfigMapperProvider) EditorGUI.ObjectField(
                         new Rect(rect.x + toggleWidth + padding + fieldWidth + padding,
                             rect.y,
                             fieldWidth,
                             lineHeight),
-                        element.Mapper,
+                        element.MapperProvider,
                         typeof(AbstractConfigMapperProvider),
                         false
                     );
@@ -570,14 +575,11 @@ namespace GoogleSheetImporter
 
         private void ApplyMapping(GoogleSheetImporterSettings.MappingConfig mapping)
         {
-            mapping.Mapper.GetMapper().Apply();
+            var provider = mapping.MapperProvider;
+            provider.GetMapper().Apply();
+            provider.HandleConfigUpdated();
 
-            var target = mapping.Mapper.GetTarget();
-
-            // if (target is IConfig config)
-            // {
-            //     config.OnConfigUpdated();
-            // }
+            var target = provider.GetTarget();
 
             EditorUtility.SetDirty(target);
         }

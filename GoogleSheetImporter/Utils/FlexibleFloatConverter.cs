@@ -2,7 +2,7 @@
 using System.Globalization;
 using Newtonsoft.Json;
 
-namespace GoogleSheetImporter.Mappers
+namespace GoogleSheetImporter
 {
     public class FlexibleFloatConverter : JsonConverter<float>
     {

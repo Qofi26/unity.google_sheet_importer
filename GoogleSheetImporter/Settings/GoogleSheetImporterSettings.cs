@@ -68,7 +68,7 @@ namespace GoogleSheetImporter.Settings
         {
             for (int i = _mappers.Count - 1; i >= 0; i--)
             {
-                if (_mappers[i] == null || _mappers[i].Mapper == null)
+                if (_mappers[i] == null || _mappers[i].MapperProvider == null)
                 {
                     _mappers.RemoveAt(i);
                 }
@@ -115,14 +115,14 @@ namespace GoogleSheetImporter.Settings
         [Serializable]
         public class MappingConfig
         {
-            [field: SerializeField] public AbstractConfigMapperProvider Mapper { get; set; }
+            [field: SerializeField] public AbstractConfigMapperProvider MapperProvider { get; set; }
             [field: SerializeField] public bool Selected { get; set; }
 
             public MappingConfig() { }
 
-            public MappingConfig(AbstractConfigMapperProvider mapper)
+            public MappingConfig(AbstractConfigMapperProvider mapperProvider)
             {
-                Mapper = mapper;
+                MapperProvider = mapperProvider;
             }
         }
     }

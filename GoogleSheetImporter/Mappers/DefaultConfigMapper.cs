@@ -1,12 +1,12 @@
 ﻿namespace GoogleSheetImporter.Mappers
 {
-    public class CommonConfigMapper : IConfigMapper
+    public class DefaultConfigMapper : IConfigMapper
     {
         private readonly IConfigTokenProvider _tokenProvider;
         private readonly IConfigPropertySetter _setter;
         private readonly IConfigModifier[] _modifiers;
 
-        public CommonConfigMapper(
+        public DefaultConfigMapper(
             IConfigTokenProvider tokenProvider,
             IConfigPropertySetter setter,
             params IConfigModifier[] modifiers)

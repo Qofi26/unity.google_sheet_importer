@@ -93,7 +93,11 @@ namespace GoogleSheetImporter.Window
 
                 var id = DriveServiceWrapper.ExtractFolderId(_settings.RootFolderUrlOrId);
                 Folders.Clear();
-                Folders.AddRange(wrapper.ListSubfolders(id, _settings.NamePrefix));
+
+                var subfolders = wrapper.ListSubfolders(id, _settings.NamePrefix)
+                    .OrderBy(x => x.Name);
+
+                Folders.AddRange(subfolders);
                 SelectedFolderIndex = Folders.Count > 0
                     ? 0
                     : -1;
@@ -123,8 +127,11 @@ namespace GoogleSheetImporter.Window
                 var wrapper = new DriveServiceWrapper(drive);
                 var folderId = Folders[SelectedFolderIndex].Id;
 
+                var spreadsheets = wrapper.ListSpreadsheetsInFolder(folderId)
+                    .OrderBy(x => x.Name);
+
                 Spreadsheets.Clear();
-                Spreadsheets.AddRange(wrapper.ListSpreadsheetsInFolder(folderId));
+                Spreadsheets.AddRange(spreadsheets);
                 SelectedFiles.Clear();
                 foreach (var f in Spreadsheets) SelectedFiles[f.Id] = false;
 
@@ -270,9 +277,18 @@ namespace GoogleSheetImporter.Window
                     var file = Spreadsheets[index];
                     SelectedFiles.TryAdd(file.Id, false);
 
-                    var label = $"{index}. {file.Name}";
+                    var label = $"{index + 1}. {file.Name}";
 
-                    EditorGUILayout.BeginHorizontal();
+                    var rowRect = EditorGUILayout.BeginHorizontal();
+
+                    if (index % 2 != 0)
+                    {
+                        var bgColor = EditorGUIUtility.isProSkin
+                            ? new Color(0f, 0f, 0f, 0.25f)
+                            : new Color(0.76f, 0.76f, 0.76f, 1f);
+                        EditorGUI.DrawRect(rowRect, bgColor);
+                    }
+
                     var rect = EditorGUILayout.GetControlRect();
                     SelectedFiles[file.Id] = EditorGUI.ToggleLeft(rect, label, SelectedFiles[file.Id]);
 
@@ -483,6 +499,15 @@ namespace GoogleSheetImporter.Window
                 drawHeaderCallback = rect => { EditorGUI.LabelField(rect, "Mappings"); },
                 drawElementCallback = (rect, index, isActive, isFocused) =>
                 {
+                    if (index % 2 != 0)
+                    {
+                        var bgColor = EditorGUIUtility.isProSkin
+                            ? new Color(0f, 0f, 0f, 0.25f)
+                            : new Color(0.76f, 0.76f, 0.76f, 1f);
+
+                        EditorGUI.DrawRect(rect, bgColor);
+                    }
+
                     var element = mappers[index];
                     var lineHeight = EditorGUIUtility.singleLineHeight;
                     var padding = 5f;
@@ -497,7 +522,7 @@ namespace GoogleSheetImporter.Window
 
                     if (element.MapperProvider)
                     {
-                        label = element.MapperProvider.GetDisplayName();
+                        label = $"{index + 1}. {element.MapperProvider.GetDisplayName()}";
                     }
 
                     element.Selected = EditorGUI.ToggleLeft(

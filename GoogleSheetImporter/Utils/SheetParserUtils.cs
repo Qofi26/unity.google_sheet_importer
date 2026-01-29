@@ -35,6 +35,7 @@ namespace GoogleSheetImporter.Parsers
             for (var headerLevel = 0; headerLevel < headerLevelCount; headerLevel++)
             {
                 var row = values[headerLevel];
+                var parentHeaderName = string.Empty;
                 var headerName = string.Empty;
                 for (var index = 0; index < maxColumn; index++)
                 {
@@ -45,6 +46,10 @@ namespace GoogleSheetImporter.Parsers
                         {
                             headerName = newHeader;
                         }
+                    }
+                    else if (result.TryGetValue(index, out var parent) && parent.Name != parentHeaderName)
+                    {
+                        continue;
                     }
 
                     if (string.IsNullOrEmpty(headerName))
@@ -59,6 +64,7 @@ namespace GoogleSheetImporter.Parsers
                     else
                     {
                         header = new HeaderConfig(headerName, header);
+                        parentHeaderName = header.Parent.Name;
                     }
 
                     result[index] = header;
@@ -104,6 +110,42 @@ namespace GoogleSheetImporter.Parsers
             }
 
             return (JObject) targetObject[header.Name];
+        }
+
+        public static JToken ConvertNumericKeyObjectsToArrays(JToken token)
+        {
+            if (token is JObject obj)
+            {
+                foreach (var prop in obj.Properties().ToList())
+                {
+                    prop.Value = ConvertNumericKeyObjectsToArrays(prop.Value);
+                }
+
+                var allNumericKeys = obj.Properties().All(p => int.TryParse(p.Name, out _));
+
+                if (allNumericKeys && obj.Properties().Any())
+                {
+                    var ordered = obj.Properties()
+                        .OrderBy(p => int.Parse(p.Name))
+                        .Select(p => p.Value);
+
+                    return new JArray(ordered);
+                }
+
+                return obj;
+            }
+
+            if (token is JArray arr)
+            {
+                for (var i = 0; i < arr.Count; i++)
+                {
+                    arr[i] = ConvertNumericKeyObjectsToArrays(arr[i]);
+                }
+
+                return arr;
+            }
+
+            return token;
         }
     }
 

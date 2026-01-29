@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 using UnityEngine.Scripting;
 
 namespace GoogleSheetImporter.Parsers
@@ -12,25 +13,26 @@ namespace GoogleSheetImporter.Parsers
         [Serializable]
         public class Settings
         {
-            public bool ImportAsConstants = false;
-
             public int HeaderLevels = 1;
 
+            [Header("Constants")] public bool ImportAsConstants = false;
+
             public int ConstantKeyColumnIndex = 0;
-            public int[] ConstantValueColumnIndex = { 1 };
             public bool UseConstantValueAsSingle = true;
+
+            public int[] ConstantValueColumnIndex = { 1 };
         }
 
         private readonly Settings _settings;
         private readonly ICellParser _cellParser;
 
-        public DefaultSheetParser(Settings settings = null)
+        public DefaultSheetParser(Settings settings = null, ICellParser cellParser = null)
         {
             settings ??= new Settings();
 
             _settings = settings;
 
-            _cellParser = new DefaultCellParser();
+            _cellParser = cellParser ?? new DefaultCellParser();
         }
 
         public object Parse(IList<IList<object>> values)
@@ -119,8 +121,10 @@ namespace GoogleSheetImporter.Parsers
                     SheetParserUtils.SetValue(jObject, header, token);
                 }
 
-                data.Add(jObject);
                 SheetParserUtils.RemoveNullProperties(jObject);
+
+                var convertedObject = SheetParserUtils.ConvertNumericKeyObjectsToArrays(jObject);
+                data.Add(convertedObject);
             }
 
             return data;

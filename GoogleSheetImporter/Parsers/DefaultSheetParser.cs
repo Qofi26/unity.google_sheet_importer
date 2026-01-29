@@ -66,7 +66,10 @@ namespace GoogleSheetImporter.Parsers
                 if (settings.UseConstantValueAsSingle)
                 {
                     var valueColumnIndex = settings.ConstantValueColumnIndex.FirstOrDefault();
-                    var value = GetCellValue(row[valueColumnIndex]);
+                    var cell = valueColumnIndex >= 0 && valueColumnIndex < row.Count
+                        ? row[valueColumnIndex]
+                        : null;
+                    var value = GetCellValue(cell);
                     result[key] = value;
                 }
                 else

@@ -508,14 +508,13 @@ namespace GoogleSheetImporter.Window
                         EditorGUI.DrawRect(rect, bgColor);
                     }
 
+                    rect.y += 2;
+
                     var element = mappers[index];
                     var lineHeight = EditorGUIUtility.singleLineHeight;
                     var padding = 5f;
-
-                    rect.y += 2;
-
-                    var toggleWidth = 170f;
-                    var buttonWidth = 200f;
+                    var toggleWidth = 250f;
+                    var buttonWidth = 175f;
                     var fieldWidth = (rect.width - toggleWidth - 3 * padding) / 2f - buttonWidth / 2f - padding;
 
                     var label = "Select mapper";
@@ -531,22 +530,8 @@ namespace GoogleSheetImporter.Window
                         element.Selected
                     );
 
-                    if (GUI.Button(
-                            new Rect(rect.x + toggleWidth + padding, rect.y, buttonWidth, lineHeight),
-                            "Открыть конфиг"))
-                    {
-                        var target = element.MapperProvider.GetTarget();
-
-                        if (target)
-                        {
-                            EditorGUIUtility.PingObject(target);
-                            Selection.activeObject = target;
-                        }
-                    }
-
-
                     element.MapperProvider = (AbstractConfigMapperProvider) EditorGUI.ObjectField(
-                        new Rect(rect.x + toggleWidth + padding + fieldWidth + padding,
+                        new Rect(rect.x + rect.width - fieldWidth - buttonWidth * 2 - padding * 2,
                             rect.y,
                             fieldWidth,
                             lineHeight),
@@ -562,6 +547,19 @@ namespace GoogleSheetImporter.Window
                         ApplyMapping(element);
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
+                    }
+
+                    if (GUI.Button(
+                            new Rect(rect.x + rect.width - buttonWidth * 2 - padding, rect.y, buttonWidth, lineHeight),
+                            "Открыть конфиг"))
+                    {
+                        var target = element.MapperProvider.GetTarget();
+
+                        if (target)
+                        {
+                            EditorGUIUtility.PingObject(target);
+                            Selection.activeObject = target;
+                        }
                     }
                 },
                 onAddCallback = list =>

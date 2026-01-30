@@ -392,6 +392,7 @@ namespace GoogleSheetImporter.Window
         {
             var imported = 0;
             var selectedCount = SelectedFiles.Count(x => x.Value);
+            var lastImportedSheetTitle = string.Empty;
 
             try
             {
@@ -421,6 +422,7 @@ namespace GoogleSheetImporter.Window
                     foreach (var sheet in meta.Sheets)
                     {
                         var sheetTitle = sheet.Properties.Title;
+                        lastImportedSheetTitle = sheetTitle;
                         if (!string.IsNullOrEmpty(_settings.NamePrefix) && !sheetTitle.StartsWith(_settings.NamePrefix))
                         {
                             continue;
@@ -459,6 +461,8 @@ namespace GoogleSheetImporter.Window
             }
             catch (Exception e)
             {
+                Debug.LogError($"Last imported sheet: {lastImportedSheetTitle}");
+
                 Debug.LogException(e);
                 ShowNotification(new GUIContent("Ошибка импорта (см. Console)"));
             }

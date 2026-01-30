@@ -15,11 +15,13 @@ namespace GoogleSheetImporter.Mappers
     {
         private readonly Object _target;
         private readonly bool _formatted;
+        private readonly IReadOnlyDictionary<string, string> _fieldsMap;
 
-        public DefaultPropertySetter(Object target, bool formattedJson)
+        public DefaultPropertySetter(Object target, bool formattedJson, IReadOnlyDictionary<string, string> fieldsMap)
         {
             _target = target;
             _formatted = formattedJson;
+            _fieldsMap = fieldsMap;
         }
 
         public void Apply(JToken token)
@@ -30,7 +32,7 @@ namespace GoogleSheetImporter.Mappers
             AssetDatabase.Refresh();
         }
 
-        private static void PopulateObject(JToken jObject, object target, bool formatted)
+        private void PopulateObject(JToken jObject, object target, bool formatted)
         {
             var settings = new JsonSerializerSettings
             {
@@ -52,7 +54,15 @@ namespace GoogleSheetImporter.Mappers
                     continue;
                 }
 
-                var jToken = jObject[property.Name];
+                var propertyName = property.Name;
+                var jsonKey = propertyName;
+
+                if (_fieldsMap.TryGetValue(propertyName, out var newJsonKey))
+                {
+                    jsonKey = newJsonKey;
+                }
+
+                var jToken = jObject[jsonKey];
                 if (jToken == null)
                 {
                     continue;

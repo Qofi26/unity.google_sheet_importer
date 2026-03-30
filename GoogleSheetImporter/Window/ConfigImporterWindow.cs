@@ -43,10 +43,8 @@ namespace GoogleSheetImporter.Window
 
         private void OnEnable()
         {
-            var settingsJson = GoogleSheetImporterSettings.Instance.ImportSettings;
-            _settings = ImportSettingsProvider.Deserialize(settingsJson);
-
-            _authSettings = _settings.AuthSettings;
+            _settings = ImportSettingsProvider.Load();
+            _authSettings = GoogleSheetImporterSettings.Instance.AuthSettings;
             _auth = new GoogleAuthService(_authSettings);
             InitializeMappersList();
         }
@@ -63,11 +61,9 @@ namespace GoogleSheetImporter.Window
 
         private void Save()
         {
-            var settings = GoogleSheetImporterSettings.Instance;
-            settings.ImportSettings = ImportSettingsProvider.Serialize(_settings);
-
-            EditorUtility.SetDirty(settings);
-            AssetDatabase.SaveAssetIfDirty(settings);
+            ImportSettingsProvider.Save(_settings);
+            EditorUtility.SetDirty(GoogleSheetImporterSettings.Instance);
+            AssetDatabase.SaveAssetIfDirty(GoogleSheetImporterSettings.Instance);
         }
 
         private void OnGUI()

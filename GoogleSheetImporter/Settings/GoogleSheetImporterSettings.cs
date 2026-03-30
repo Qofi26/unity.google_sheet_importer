@@ -28,7 +28,7 @@ namespace GoogleSheetImporter.Settings
             }
         }
 
-        [SerializeField] [HideInInspector] private string _importSettings = string.Empty;
+        [SerializeField] [HideInInspector] private AuthSettings _authSettings = new();
 
         [SerializeField] private List<ParserConfig> _parsers = new();
 
@@ -36,11 +36,7 @@ namespace GoogleSheetImporter.Settings
 
         public List<MappingConfig> Mappers => _mappers;
 
-        public string ImportSettings
-        {
-            get => _importSettings;
-            set => _importSettings = value;
-        }
+        public AuthSettings AuthSettings => _authSettings;
 
         public bool TryGetParserProvider(string fileName, out AbstractSheetParserProvider provider)
         {
@@ -116,7 +112,7 @@ namespace GoogleSheetImporter.Settings
         public class MappingConfig
         {
             [field: SerializeField] public AbstractConfigMapperProvider MapperProvider { get; set; }
-            [field: SerializeField] public bool Selected { get; set; }
+            public bool Selected { get; set; }
 
             public MappingConfig() { }
 

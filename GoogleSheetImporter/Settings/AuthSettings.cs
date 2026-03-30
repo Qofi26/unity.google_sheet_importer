@@ -1,13 +1,14 @@
 using System;
+using UnityEngine;
 
 namespace GoogleSheetImporter.Settings
 {
     [Serializable]
     internal sealed class AuthSettings : IAuthSettings
     {
-        public AuthMode AuthMode { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public string ServiceAccountKeyPath { get; set; }
+        [field: SerializeField] public AuthMode AuthMode { get; set; }
+        [field: SerializeField] public string ClientId { get; set; }
+        [field: SerializeField] public string ClientSecret { get; set; }
+        [field: SerializeField] public string ServiceAccountKeyPath { get; set; }
     }
 }

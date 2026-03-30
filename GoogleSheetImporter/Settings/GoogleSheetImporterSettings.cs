@@ -28,13 +28,19 @@ namespace GoogleSheetImporter.Settings
             }
         }
 
-        [SerializeField]
-        private List<ParserConfig> _parsers = new();
+        [SerializeField] [HideInInspector] private string _importSettings = string.Empty;
 
-        [SerializeField]
-        private List<MappingConfig> _mappers = new();
+        [SerializeField] private List<ParserConfig> _parsers = new();
+
+        [SerializeField] private List<MappingConfig> _mappers = new();
 
         public List<MappingConfig> Mappers => _mappers;
+
+        public string ImportSettings
+        {
+            get => _importSettings;
+            set => _importSettings = value;
+        }
 
         public bool TryGetParserProvider(string fileName, out AbstractSheetParserProvider provider)
         {

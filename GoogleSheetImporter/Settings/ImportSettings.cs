@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GoogleSheetImporter.Settings
 {
+    [Serializable]
     internal sealed class ImportSettings
     {
         public string RootFolderUrlOrId = "";

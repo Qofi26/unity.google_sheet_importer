@@ -12,6 +12,29 @@ namespace GoogleSheetImporter.Settings
         public static ImportSettings Load()
         {
             var json = PlayerPrefs.GetString(kPrefsKey, "");
+            var settings = Deserialize(json);
+            return settings;
+        }
+
+        public static void Save(ImportSettings settings)
+        {
+            var json = Serialize(settings);
+            PlayerPrefs.SetString(kPrefsKey, json);
+        }
+
+        public static string Serialize(ImportSettings settings)
+        {
+            if (settings == null)
+            {
+                return string.Empty;
+            }
+
+            var json = JsonConvert.SerializeObject(settings);
+            return json;
+        }
+
+        public static ImportSettings Deserialize(string json)
+        {
             if (string.IsNullOrEmpty(json))
             {
                 return new ImportSettings();
@@ -32,17 +55,6 @@ namespace GoogleSheetImporter.Settings
             {
                 return new ImportSettings();
             }
-        }
-
-        public static void Save(ImportSettings settings)
-        {
-            if (settings == null)
-            {
-                return;
-            }
-
-            var json = JsonConvert.SerializeObject(settings);
-            PlayerPrefs.SetString(kPrefsKey, json);
         }
     }
 }
